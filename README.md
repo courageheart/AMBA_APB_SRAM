@@ -66,3 +66,25 @@ This project is organized in following manner
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|->![Text File](http://icons.iconarchive.com/icons/untergunter/leaf-mimes/16/text-x-generic-icon.png) apb_reg_alias_test.sv <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|->![Text File](http://icons.iconarchive.com/icons/untergunter/leaf-mimes/16/text-x-generic-icon.png) apb_reg_por_read_test.sv <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|->![Text File](http://icons.iconarchive.com/icons/untergunter/leaf-mimes/16/text-x-generic-icon.png) apb_slv_err_test.sv <br/>
+
+# Run Instruction
+## Running Single Test without coverage analysis
+```powershell
+> cd sim
+> ..\scripts\runscript.ps1 -testName <enter_testname_to_run> -mode <c or gui>  
+```
+## Running Single Test with coverage analysis
+```powershell
+> cd sim
+> ..\scripts\runscript.ps1 -testName <enter_testname_to_run> -mode <c or gui> -cov
+```
+## Running Regression Tests with Questa VRM in batch mode
+```powershell
+> cd sim
+> vrun -rmdb apb_regression.rmdb
+```
+## Running Regression Tests with Questa VRM in gui mode
+```powershell
+> cd sim
+> vrun -gui -rmdb apb_regression.rmdb
+```
