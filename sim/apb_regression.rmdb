@@ -1,0 +1,162 @@
+<?xml version="1.0" ?>
+<rmdb version="1.0" toprunnables="nightly">
+    <runnable name="nightly" type="group">
+        <parameters>
+            <parameter name="mergefile">merge.ucdb</parameter>
+        </parameters>
+        <members>
+            <member>directed</member>
+            <member>random</member>
+            <member>directed2</member>
+            <member>random2</member>
+        </members> 
+        <postScript launch="vsim">
+            <command>vcover attr -name ORIGFILENAME -name TESTSTATUS (%mergefile%)</command> 
+        </postScript>  
+    </runnable>
+
+    <!-- ============== -->
+    <!-- DIRECTED TESTS -->
+    <!-- ============== -->
+
+    <runnable name="directed" type="group">
+        <parameters>
+            <parameter name="ucdbfile">../(%INSTANCE%).ucdb</parameter>
+        </parameters>
+        <members>
+            <member>apb_directed_reg_write_read_test</member>
+            <member>apb_reg_alias_test</member>
+            <member>apb_reg_por_read_test</member>
+        </members>
+        <execScript>
+            <command>vlib work</command>
+            <command>vmap work</command>
+            <command>vlog -f (%RMDBDIR%)/tb_filelist_for_VRM.f -timescale 1ns/1ps </command>
+            <command>vsim -c tb_top +UVM_TESTNAME=(%TESTCASE%)</command>
+            <command>run -all</command>
+            <command>coverage attribute -name TESTNAME -value (%INSTANCE%)_without_user_defines</command>
+            <command>coverage save (%ucdbfile%)</command>
+        </execScript>
+    </runnable>
+    <runnable name="apb_directed_reg_write_read_test" type="task"/>
+    <runnable name="apb_reg_alias_test" type="task"/>  
+    <runnable name="apb_reg_por_read_test" type="task"/>
+
+    <!-- ============ -->
+    <!-- RANDOM TESTS -->
+    <!-- ============ -->
+    <runnable name="random" type="group">
+        <parameters>
+            <parameter name="ucdbfile">../(%TESTCASE%)_(%seed%).ucdb</parameter>
+        </parameters>
+        <members>
+            <member>apb_rand_reg_write_read_test</member>
+            <member>apb_slv_err_test</member>
+        </members>
+        <preScript>
+            <command>file delete -force work</command>
+            <command>vlib work</command>
+            <command>vmap work</command>
+        </preScript>
+        <execScript>
+            <command>vlog -f (%RMDBDIR%)/tb_filelist_for_VRM.f -timescale 1ns/1ps </command>
+            <command>vsim -sv_seed (%seed%) +UVM_TESTNAME=(%TESTCASE%) -c tb_top</command>
+            <command>run -all</command>
+            <command>coverage attribute -name TESTNAME -value (%TESTCASE%)_with_(%seed%)</command>
+            <command>coverage save (%ucdbfile%)</command>
+        </execScript>
+    </runnable>
+
+    <runnable name="apb_rand_reg_write_read_test" type="task"> 
+        <parameters>
+            <parameter name="seed">123</parameter>
+        </parameters>
+    </runnable>
+    <runnable name="apb_slv_err_test" type="task">
+        <parameters>
+            <parameter name="seed">456</parameter>
+        </parameters>
+    </runnable>
+    
+    <!-- ================================ -->
+    <!-- DIRECTED TESTS WITH USER DEFINES -->
+    <!-- ================================ -->
+
+    <runnable name="directed2" type="group">
+        <parameters>
+            <parameter name="ucdbfile">../(%TESTCASE%)_with_defines_(%seed%).ucdb</parameter>
+        </parameters>
+        <members>
+            <member>apb_directed_reg_write_read_test</member>
+            <member>apb_reg_alias_test</member>
+            <member>apb_reg_por_read_test</member>
+        </members>
+        <preScript>
+            <command>file delete -force work</command>
+        </preScript>
+        <execScript>
+            <command>vlib work</command>
+            <command>vmap work</command>
+            <command>vlog -f (%RMDBDIR%)/tb_filelist_for_VRM.f -timescale 1ns/1ps </command>
+            <command>vsim -c tb_top +UVM_TESTNAME=(%TESTCASE%) +define+APB_SLV_WAIT_FUNC_EN=1 +define+APB_SLV_MIN_WAIT_CYC=1 +define+APB_SLV_MAX_WAIT_CYC=3</command>
+            <command>run -all</command>
+            <command>coverage attribute -name TESTNAME -value (%INSTANCE%)_with_user_defines</command>
+            <command>coverage save (%ucdbfile%)</command>
+        </execScript>
+    </runnable>
+    <runnable name="apb_directed_reg_write_read_test" type="task">
+        <parameters>
+            <parameter name="TESTCASE">apb_directed_reg_write_read_test</parameter>
+            <parameter name="seed">random</parameter>
+        </parameters>
+    </runnable>    
+    <runnable name="apb_reg_alias_test" type="task">
+        <parameters>
+            <parameter name="TESTCASE">apb_reg_alias_test</parameter>
+            <parameter name="seed">random</parameter>
+        </parameters>
+    </runnable>    
+    <runnable name="apb_reg_por_read_test" type="task">
+        <parameters>
+            <parameter name="TESTCASE">apb_reg_por_read_test</parameter>
+            <parameter name="seed">random</parameter>
+        </parameters>
+    </runnable>
+    
+    <!-- ============================== -->
+    <!-- RANDOM TESTS WITH USER DEFINES -->
+    <!-- ============================== -->
+    <runnable name="random2" type="group">
+        <parameters>
+            <parameter name="ucdbfile">../test(%seed%).ucdb</parameter>
+        </parameters>
+        <members>
+            <member>apb_rand_reg_write_read_test</member>
+            <member>apb_slv_err_test</member>
+        </members>
+        <preScript>
+            <command>file delete -force work</command>
+            <command>vlib work</command>
+        </preScript>
+        <execScript>
+            <command>vlog -f (%RMDBDIR%)/tb_filelist_for_VRM.f -timescale 1ns/1ps </command>
+            <command>vsim -lib ./work -sv_seed (%seed%) +SEED=(%seed%) -c tb_top +UVM_TESTNAME=(%TESTCASE%) +define+APB_SLV_WAIT_FUNC_EN=1 +define+APB_SLV_MIN_WAIT_CYC=1 +define+APB_SLV_MAX_WAIT_CYC=3</command>
+            <command>run -all</command>
+            <command>coverage attribute -name TESTNAME -value randtest(%seed%)</command>
+            <command>coverage save (%ucdbfile%)</command>
+        </execScript>
+    </runnable>
+
+    <runnable name="apb_rand_reg_write_read_test" type="task"> 
+        <parameters>
+            <parameter name="TESTCASE">apb_rand_reg_write_read_test</parameter>
+            <parameter name="seed">123</parameter>
+        </parameters>
+    </runnable>
+    <runnable name="apb_slv_err_test" type="task">
+        <parameters>
+            <parameter name="TESTCASE">apb_slv_err_test</parameter>
+            <parameter name="seed">456</parameter>
+        </parameters>
+    </runnable>
+</rmdb>

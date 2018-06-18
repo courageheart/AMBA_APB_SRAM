@@ -1,0 +1,5 @@
+VRMSTART
+VRM::Version 1
+VRM::AddRmdb G:/ASIC_DESIGN_Projects/SRAM/AMBA_APB_SRAM/sim/apb_regression.rmdb
+VRM::AddConfiguration G:/ASIC_DESIGN_Projects/SRAM/AMBA_APB_SRAM/sim/apb_regression.rmdb {Run Template 1} {{I nightly}} {-mseed 0 -vrmdata G:/ASIC_DESIGN_Projects/SRAM/AMBA_APB_SRAM/sim/VRMDATA2}
+VRMEND
