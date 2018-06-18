@@ -88,3 +88,4 @@ This project is organized in following manner
 > cd sim
 > vrun -gui -rmdb apb_regression.rmdb
 ```
+Right click on Default Configuration 1 and Select run.
